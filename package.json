@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/fuyuanwu/node-image-svr/issues"
   },
-  "homepage": "https://github.com/fuyuanwu/node-image-svr#readme"
+  "homepage": "https://github.com/fuyuanwu/node-image-svr#readme",
+  "dependencies": {
+    "imagemagick-native": "^1.9.2"
+  }
 }
