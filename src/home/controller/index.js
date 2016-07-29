@@ -55,7 +55,7 @@ export default class extends Base {
 
           imagemagick.identify({
             srcData: src_data
-          }, function (err, result) {
+          }, (err, result) => {
             if (err) return
 
             const options = {
