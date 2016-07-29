@@ -13,7 +13,7 @@ export default class {
    * @param index
    * @returns {Number}
    */
-  static str_hashstr_hash (str, index) {
+  static str_hash (str, index) {
     let c = str.substr(index, 3)
     let d = parseInt(c, 16) / 4
     return parseInt(d)
