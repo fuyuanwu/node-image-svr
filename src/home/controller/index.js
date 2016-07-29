@@ -7,9 +7,10 @@ import imagemagick from 'imagemagick-native'
 import util from '../../common/service/util'
 
 export default class extends Base {
-  indexAction () {
-    return this.display()
-  }
+  // 上传文件的实例代码
+  // indexAction () {
+  //   return this.display()
+  // }
 
   downloadAction () {
     let id = this.get('id')
@@ -17,10 +18,6 @@ export default class extends Base {
     let height = this.get('h') || 0
     let resize_style = this.get('rs') || 'aspectfill'
     let type = this.get('t') || 'png'
-
-    // const filename = util.encode_filename_v1('v1', id, type, width, height, resize_style)
-    // const filepath = util.get_filedir('appid', filename)
-    // let srcData = fs.readFileSync(filepath)
 
     // 先判断原图存在不存在
     const src_filename = util.encode_filename_v1('v1', id) // 其他参数都不传，就表示获取原图
