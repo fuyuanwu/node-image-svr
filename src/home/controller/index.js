@@ -18,42 +18,69 @@ export default class extends Base {
     let resize_style = this.get('rs') || 'aspectfill'
     let type = this.get('t') || 'png'
 
-    const filename = util.encode_filename_v1('v1', id, type, width, height, resize_style)
-    const filepath = util.get_filedir('appid', filename)
-    let srcData = fs.readFileSync(filepath)
+    // const filename = util.encode_filename_v1('v1', id, type, width, height, resize_style)
+    // const filepath = util.get_filedir('appid', filename)
+    // let srcData = fs.readFileSync(filepath)
 
-    fs.stat(filepath, function (err, stat) {
-      if (err) return
-      let size = stat.size
-      let quality = 100
+    // 先判断原图存在不存在
+    const src_filename = util.encode_filename_v1('v1', id) // 其他参数都不传，就表示获取原图
+    const src_filedir = util.get_filedir('appid', src_filename)
+    const src_filepath = `${src_filedir}${path.sep}${src_filename}`
 
-      // 根据原图确定压缩比
-      if (size > 1024 * 4) quality = quality * 0.25
-      else if (size > 1024 * 2) quality = quality * 0.4
-      else if (size > 1024) quality = quality * 0.8
-      else if (size > 512) quality = quality * 0.9
+    try {
+      const src_stat = fs.statSync(src_filepath)
+      if (src_stat.isFile()) {
+        const filename = util.encode_filename_v1('v1', id, type, width, height, resize_style)
+        const filedir = util.get_filedir('appid', filename)
+        const filepath = `${filedir}${path.sep}${filename}`
 
-      imagemagick.identify({
-        srcData: srcData
-      }, function (err, result) {
-        if (err) return
+        try {
+          const stat = fs.statSync(filepath)
+          if (stat.isFile()) {
+            return this.download(filepath)
+          } else { // 目标图不存在
+            return this.json({ errcode: 408, errmsg: 'id invalid.' })
+          }
+        } catch (e) { // 目标图不存在
+          let size = src_stat.size // 原图大小
+          let quality = 100
 
-        const options = {
-          srcData: srcData,
-          blur: 1,
-          // resizeStyle: resize_style, // aspectfill is the default, or 'aspectfit' or 'fill'
-          gravity: 'Center', // optional: position crop area when using 'aspectfill'
-          format: type,
-          quality: quality
+          // 根据原图确定压缩比
+          if (size > 1024 * 4) quality = quality * 0.25
+          else if (size > 1024 * 2) quality = quality * 0.4
+          else if (size > 1024) quality = quality * 0.8
+          else if (size > 512) quality = quality * 0.9
+
+          let src_data = fs.readFileSync(src_filepath)
+
+          imagemagick.identify({
+            srcData: src_data
+          }, function (err, result) {
+            if (err) return
+
+            const options = {
+              srcData: src_data,
+              blur: 1,
+              // resizeStyle: resize_style, // aspectfill is the default, or 'aspectfit' or 'fill'
+              gravity: 'Center', // optional: position crop area when using 'aspectfill'
+              format: type,
+              quality: quality
+            }
+
+            if (width) options.width = width
+            if (height) options.height = height
+            if (resize_style) options.resizeStyle = resize_style
+
+            fs.writeFileSync(filepath, imagemagick.convert(options))
+            return this.download(filepath)
+          })
         }
-
-        if (width) options.width = width
-        if (height) options.height = height
-        if (resize_style) options.resizeStyle = resize_style
-
-        fs.writeFileSync(filepath, imagemagick.convert(options))
-      })
-    })
+      } else { // 原图不存在
+        return this.json({ errcode: 408, errmsg: 'id invalid.' })
+      }
+    } catch (e) { // 原图不存在
+      return this.json({ errcode: 408, errmsg: 'id invalid.' })
+    }
   }
 
   uploadAction () {
