@@ -7,11 +7,11 @@ import imagemagick from 'imagemagick-native'
 import util from '../../common/service/util'
 
 export default class extends Base {
-  /**
-   * index action
-   * @return {Promise} []
-   */
   indexAction () {
+    return this.display()
+  }
+
+  downloadAction () {
     let id = this.get('id')
     let width = this.get('w') || 0
     let height = this.get('h') || 0
@@ -53,10 +53,7 @@ export default class extends Base {
 
         fs.writeFileSync(filepath, imagemagick.convert(options))
       })
-
     })
-
-    return this.display()
   }
 
   uploadAction () {
