@@ -1,9 +1,6 @@
-# Created by .ignore support plugin (hsz.mobi)
-### Node template
 # Logs
 logs
 *.log
-npm-debug.log*
 
 # Runtime data
 pids
@@ -14,10 +11,7 @@ pids
 lib-cov
 
 # Coverage directory used by tools like istanbul
-coverage
-
-# nyc test coverage
-.nyc_output
+coverage/
 
 # Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
 .grunt
@@ -25,16 +19,17 @@ coverage
 # node-waf configuration
 .lock-wscript
 
-# Compiled binary addons (http://nodejs.org/api/addons.html)
-build/Release
+# Dependency directory
+# https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
+node_modules/
 
-# Dependency directories
-node_modules
-jspm_packages
+# IDE config
+.idea
 
-# Optional npm cache directory
-.npm
+# output
+output/
+output.tar.gz
 
-# Optional REPL history
-.node_repl_history
+app/
 
+runtime/
