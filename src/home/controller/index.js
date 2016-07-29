@@ -37,7 +37,7 @@ export default class extends Base {
         try {
           const stat = fs.statSync(filepath)
           if (stat.isFile()) {
-            return this.download(filepath)
+            return this.download(filepath, undefined, id)
           } else { // 目标图不存在
             return this.json({ errcode: 408, errmsg: 'id invalid.' })
           }
@@ -72,7 +72,7 @@ export default class extends Base {
             if (resize_style) options.resizeStyle = resize_style
 
             fs.writeFileSync(filepath, imagemagick.convert(options))
-            return this.download(filepath)
+            return this.download(filepath, undefined, id)
           })
         }
       } else { // 原图不存在
