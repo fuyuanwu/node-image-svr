@@ -25,8 +25,8 @@ export default class {
    * @param filename
    */
   static get_filedir (appid, filename) {
-    let dir1 = this.str_hash(filename, 2)
-    let dir2 = this.str_hash(filename, 5)
+    let dir1 = this.str_hash(filename, 3)
+    let dir2 = this.str_hash(filename, 6)
 
     let config = think.config('upload')
     let root_path = config.path
