@@ -81,9 +81,18 @@ export default class extends Base {
   }
 
   uploadAction () {
+    // 处理跨域问题
+    let method = this.http.method.toLowerCase()
+    if (method === "options") {
+      this.setCorsHeader()
+      this.end()
+      return
+    }
+    this.setCorsHeader()
+
     let file = think.extend({}, this.file('image'))
 
-    var filepath = file.path;
+    var filepath = file.path
 
     if (!filepath) {
       return this.json({ errcode: 400, errmsg: 'no file upload' })
@@ -105,5 +114,12 @@ export default class extends Base {
     fs.renameSync(filepath, upload_filepath)
 
     return this.json({ errcode: 0, id: md5Hex })
+  }
+
+  setCorsHeader () {
+    this.header("Access-Control-Allow-Origin", this.header("origin") || "*")
+    this.header("Access-Control-Allow-Headers", "x-requested-with")
+    this.header("Access-Control-Request-Method", "GET,POST,PUT,DELETE")
+    this.header("Access-Control-Allow-Credentials", "true")
   }
 }
