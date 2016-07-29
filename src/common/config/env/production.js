@@ -1,3 +1,5 @@
 'use strict'
 
-export default {}
+export default {
+  port: '1460'
+}
