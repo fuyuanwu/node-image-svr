@@ -1,8 +1,8 @@
 {
   "apps": [{
-    "name": "G:githubnode-image-svrG:githubnode-image-svrnode-image-svr",
+    "name": "image-server",
     "script": "www/production.js",
-    "cwd": "G:\github\node-image-svr\node-image-svr",
+    "cwd": "/home/metro/node-image-svr",
     "exec_mode": "cluster",
     "instances": 0,
     "max_memory_restart": "1G",
@@ -10,7 +10,7 @@
     "node_args": [],
     "args": [],
     "env": {
-      
+
     }
   }]
 }
