@@ -1,12 +1,12 @@
-'use strict';
+'use strict'
 
 /**
  * session configs
  */
 export default {
-  name: 'thinkjs',
-  type: 'file',
-  secret: 'DMEBNZ~(',
+  name: 'hrc',
+  type: 'redis',
+  secret: 'O8Y~MGJ#@#',
   timeout: 24 * 3600,
   cookie: { // cookie options
     length: 32,
@@ -14,7 +14,10 @@ export default {
   },
   adapter: {
     file: {
-      path: think.RUNTIME_PATH + '/session',
+      path: think.RUNTIME_PATH + '/session'
+    },
+    redis: {
+      prefix: 'hrc_'
     }
   }
-};
+}

@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 /**
  * template config
  */
@@ -11,4 +11,4 @@ export default {
   adapter: {
     ejs: {}
   }
-};
+}

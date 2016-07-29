@@ -2,7 +2,7 @@
 
 import Base from './base.js';
 import fs from 'fs';
-import imagemagick from 'imagemagick-native';
+// import imagemagick from 'imagemagick-native';
 import crypto from 'crypto';
 
 export default class extends Base {
@@ -28,23 +28,23 @@ export default class extends Base {
       let srcData = fs.readFileSync(source)
       let md5sum = crypto.createHash('md5');
 
-      imagemagick.identify({
-        srcData: srcData
-      }, function (err, result) {
-        if (err) return
-        console.log(result)
-      })
-
-      fs.writeFileSync(dist, imagemagick.convert({
-        srcData: srcData,
-        blur: 1,
-        width: 500,
-        height: 500,
-        resizeStyle: 'aspectfill', // aspectfill is the default, or 'aspectfit' or 'fill'
-        gravity: 'Center', // optional: position crop area when using 'aspectfill'
-        format: 'PNG',
-        quality: quality
-      }))
+    //   imagemagick.identify({
+    //     srcData: srcData
+    //   }, function (err, result) {
+    //     if (err) return
+    //     console.log(result)
+    //   })
+    //
+    //   fs.writeFileSync(dist, imagemagick.convert({
+    //     srcData: srcData,
+    //     blur: 1,
+    //     width: 500,
+    //     height: 500,
+    //     resizeStyle: 'aspectfill', // aspectfill is the default, or 'aspectfit' or 'fill'
+    //     gravity: 'Center', // optional: position crop area when using 'aspectfill'
+    //     format: 'PNG',
+    //     quality: quality
+    //   }))
     })
 
     return this.display();

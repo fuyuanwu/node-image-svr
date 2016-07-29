@@ -1,9 +1,9 @@
-'use strict';
+'use strict'
 /**
  * err config
  */
 export default {
-  //key: value
-  key: "errno", //error number
-  msg: "errmsg" //error message
-};
+  // key: value
+  key: 'errcode', // error number
+  msg: 'errmsg' // error message
+}
