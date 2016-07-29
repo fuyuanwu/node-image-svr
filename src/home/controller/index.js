@@ -14,7 +14,7 @@ export default class extends Base {
   indexAction () {
     let width = this.get('w') || 0
     let height = this.get('h') || 0
-    let resize_style = this.get('rs') || aspectfill
+    let resize_style = this.get('rs') || 'aspectfill'
     let type = this.get('t') || 'png'
 
     const source = './img/8.jpg'
