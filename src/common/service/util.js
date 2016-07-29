@@ -74,7 +74,7 @@ export default class {
 
     let config = think.config('upload')
     let root_path = config.path
-    return `${appid}${path.sep}${root_path}${path.sep}${dir1}${path.sep}${dir2}`
+    return `${root_path}${path.sep}${appid}${path.sep}${dir1}${path.sep}${dir2}`
   }
 
   static encode_filename_v1 (version = 'v1', md5Hex, type, width, height, resize_style) {
