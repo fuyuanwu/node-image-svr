@@ -20,55 +20,11 @@ export default class {
   }
 
   /**
-   * 创建多层目录
-   * @param p
-   * @param mode
-   * @param made
-   * @returns {*}
-   */
-  static mkdirs (p, mode, made) {
-    if (mode === undefined) {
-      mode = 776 & (~process.umask())
-    }
-    if (!made) made = null
-
-    if (typeof mode === 'string') mode = parseInt(mode, 8)
-    p = path.resolve(p)
-
-    try {
-      fs.mkdirSync(p, mode)
-      made = made || p
-    }
-    catch (err0) {
-
-      switch (err0.code) {
-        case 'ENOENT' :
-          made = mkdirs(path.dirname(p), mode, made)
-          mkdirs(p, mode, made)
-          break
-
-        default:
-          let stat
-          try {
-            stat = fs.statSync(p)
-          }
-          catch (err1) {
-            throw err0
-          }
-          if (!stat.isDirectory()) throw err0
-          break
-      }
-    }
-
-    return made
-  }
-
-  /**
-   * 生成文件路径
+   * 生成文件目录
    * @param appid
    * @param filename
    */
-  static get_filepath (appid, filename) {
+  static get_filedir (appid, filename) {
     let dir1 = this.str_hash(filename, 2)
     let dir2 = this.str_hash(filename, 5)
 
@@ -77,7 +33,7 @@ export default class {
     return `${root_path}${path.sep}${appid}${path.sep}${dir1}${path.sep}${dir2}`
   }
 
-  static encode_filename_v1 (version = 'v1', md5Hex, type, width, height, resize_style) {
+  static encode_filename_v1 (version = 'v1', md5Hex, type = 'png', width = 0, height = 0, resize_style = 'aspectfill') {
     return [ 'v1', md5Hex, type, width, height, resize_style ].join('&')
   }
 
@@ -85,7 +41,7 @@ export default class {
     return [ _v1_, _md5Hex_, _type_, _width_, _height_, _resize_style_ ] = encode_filename_v1.split('&')
   }
 
-  static md5Hex (data){
+  static md5Hex (data) {
     let md5 = crypto.createHash('md5')
     md5.update(data)
     return md5.digest('hex')
