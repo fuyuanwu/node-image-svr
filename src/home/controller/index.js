@@ -36,7 +36,7 @@ export default class extends Base {
       let md5Hex = md5.digest('hex')
 
       const encode_filename_v1 = [ 'v1', md5Hex, type, width, height, resize_style ].join('&')
-      const deode_filename_v1 = [ v1, md5Hex, type, width, height, resize_style ] = encode_filename_v1.split('&')
+      const deode_filename_v1 = [ 'v1', 'md5Hex', 'type', 'width', 'height', 'resize_style' ] = encode_filename_v1.split('&')
 
       const dist = `./img/${encode_filename_v1}`
 
