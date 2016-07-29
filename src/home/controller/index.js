@@ -3,8 +3,8 @@
 import Base from './base.js'
 import fs from 'fs'
 import imagemagick from 'imagemagick-native'
-import crypto from 'crypto'
-import _ from 'lodash'
+import util from '../../common/service/util'
+
 
 export default class extends Base {
   /**
@@ -31,15 +31,14 @@ export default class extends Base {
       else if (size > 512) quality = quality * 0.9
 
       let srcData = fs.readFileSync(source)
-      let md5 = crypto.createHash('md5')
-      md5.update(srcData)
-      let md5Hex = md5.digest('hex')
+      let md5Hex = util.md5Hex(srcData)
 
       const encode_filename_v1 = [ 'v1', md5Hex, type, width, height, resize_style ].join('&') // encode_filename_v1
       const [ _v1_, _md5Hex_, _type_, _width_, _height_, _resize_style_ ] = encode_filename_v1.split('&') // deode_filename_v1
-      console.log(_v1_, _md5Hex_, _type_, _width_, _height_, _resize_style_)
 
-      const dist = `./img/${encode_filename_v1}`
+      const filename = util.encode_filename_v1('v1', md5Hex, type, width, height, resize_style )
+      const filepath = util.get_filepath(filename)
+
 
       imagemagick.identify({
         srcData: srcData
@@ -59,7 +58,7 @@ export default class extends Base {
         if (height) options.height = height
         if (resize_style) options.resizeStyle = resize_style
 
-        fs.writeFileSync(dist, imagemagick.convert(options))
+        fs.writeFileSync(filepath, imagemagick.convert(options))
       })
 
     })
