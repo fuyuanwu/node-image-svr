@@ -54,9 +54,9 @@ export default class extends Base {
           quality: quality
         }
 
-        if (width) options[ width ] = width
-        if (height) options[ height ] = height
-        if (resize_style) options[ resizeStyle ] = resize_style
+        if (width) options.width = width
+        if (height) options.height = height
+        if (resize_style) options.resizeStyle = resize_style
 
         fs.writeFileSync(dist, imagemagick.convert(options))
       })
