@@ -89,7 +89,7 @@ export default class {
 
   static md5Hex (data){
     let md5 = crypto.createHash('md5')
-    md5.update(srcData)
+    md5.update(data)
     return md5.digest('hex')
   }
 }
