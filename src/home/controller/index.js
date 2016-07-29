@@ -37,7 +37,7 @@ export default class extends Base {
       const [ _v1_, _md5Hex_, _type_, _width_, _height_, _resize_style_ ] = encode_filename_v1.split('&') // deode_filename_v1
 
       const filename = util.encode_filename_v1('v1', md5Hex, type, width, height, resize_style )
-      const filepath = util.get_filepath(filename)
+      const filepath = util.get_filepath('appid', filename)
 
 
       imagemagick.identify({

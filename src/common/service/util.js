@@ -13,12 +13,10 @@ export default class {
    * @param index
    * @returns {Number}
    */
-  static str_hash (str, index) {
-    let c;
-    c = str.substr(index, 3);
-    let d = parseInt(c, 16);
-    d = d / 4;
-    return parseInt(d);
+  static str_hashstr_hash (str, index) {
+    let c = str.substr(index, 3)
+    let d = parseInt(c, 16) / 4
+    return parseInt(d)
   }
 
   /**
@@ -30,39 +28,39 @@ export default class {
    */
   static mkdirs (p, mode, made) {
     if (mode === undefined) {
-      mode = 776 & (~process.umask());
+      mode = 776 & (~process.umask())
     }
-    if (!made) made = null;
+    if (!made) made = null
 
-    if (typeof mode === 'string') mode = parseInt(mode, 8);
-    p = path.resolve(p);
+    if (typeof mode === 'string') mode = parseInt(mode, 8)
+    p = path.resolve(p)
 
     try {
-      fs.mkdirSync(p, mode);
-      made = made || p;
+      fs.mkdirSync(p, mode)
+      made = made || p
     }
     catch (err0) {
 
       switch (err0.code) {
         case 'ENOENT' :
-          made = mkdirs(path.dirname(p), mode, made);
-          mkdirs(p, mode, made);
-          break;
+          made = mkdirs(path.dirname(p), mode, made)
+          mkdirs(p, mode, made)
+          break
 
         default:
-          let stat;
+          let stat
           try {
-            stat = fs.statSync(p);
+            stat = fs.statSync(p)
           }
           catch (err1) {
-            throw err0;
+            throw err0
           }
-          if (!stat.isDirectory()) throw err0;
-          break;
+          if (!stat.isDirectory()) throw err0
+          break
       }
     }
 
-    return made;
+    return made
   }
 
   /**
