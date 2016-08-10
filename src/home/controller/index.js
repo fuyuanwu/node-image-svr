@@ -6,17 +6,28 @@ import path from 'path'
 import imagemagick from 'imagemagick-native'
 import util from '../../common/service/util'
 
-let generator = function (width, height) {
+let fs_exists = think.promisify(fs.exists, fs)
+let fs_stat = think.promisify(fs.stat, fs)
+let fs_readFile = think.promisify(fs.readFile, fs)
+let fs_writeFile = think.promisify(fs.writeFile, fs)
+
+async function generator (width, height) {
   const filepath = util.get_sys_filepath('not_find', width, height)
   const src_filepath = './img/not_find/not_find.png'
-  let data = fs.readFileSync(src_filepath)
-  fs.writeFileSync(filepath, imagemagick.convert({
-    srcData: data,
-    width: width,
-    height: height
-  }))
+  let data = await fs_readFile(src_filepath)
 
-  return  filepath
+  const exists = await fs_exists(filepath)
+  if (exists) {
+    return filepath
+  } else {
+    await fs_writeFile(filepath, imagemagick.convert({
+      srcData: data,
+      width: width,
+      height: height,
+      resizeStyle: 'fill', // aspectfill is the default, or 'aspectfit' or 'fill'
+    }))
+    return filepath
+  }
 }
 
 export default class extends Base {
@@ -25,7 +36,7 @@ export default class extends Base {
   //   return this.display()
   // }
 
-  downloadAction () {
+  async downloadAction () {
     let id = this.get('id')
     let width = this.get('w') || 0
     let height = this.get('h') || 0
@@ -37,21 +48,19 @@ export default class extends Base {
     const src_filedir = util.get_filedir('appid', src_filename)
     const src_filepath = `${src_filedir}${path.sep}${src_filename}`
 
-    try {
-      const src_stat = fs.statSync(src_filepath)
+    const src_exists = await fs_exists(src_filepath)
+
+    if (src_exists) { // 存在
+      const src_stat = await fs_stat(src_filepath)
       if (src_stat.isFile()) {
         const filename = util.encode_filename_v1('v1', id, type, width, height, resize_style)
         const filedir = util.get_filedir('appid', filename)
         const filepath = `${filedir}${path.sep}${filename}`
 
-        try {
-          const stat = fs.statSync(filepath)
-          if (stat.isFile()) {
-            return this.download(filepath, undefined, id)
-          } else { // 目标图不存在
-            return this.json({ errcode: 408, errmsg: 'id invalid.' })
-          }
-        } catch (e) { // 目标图不存在
+        const exists = await fs_exists(filepath)
+        if (exists) {
+          return this.download(filepath, undefined, id)
+        } else { // 目标图不存在
           let size = src_stat.size // 原图大小
           let quality = 100
 
@@ -61,36 +70,31 @@ export default class extends Base {
           else if (size > 1024) quality = quality * 0.8
           else if (size > 512) quality = quality * 0.9
 
-          let src_data = fs.readFileSync(src_filepath)
+          let src_data = await fs_readFile(src_filepath)
 
-          imagemagick.identify({
-            srcData: src_data
-          }, (err, result) => {
-            if (err) return
+          const options = {
+            srcData: src_data,
+            blur: 1,
+            // resizeStyle: resize_style, // aspectfill is the default, or 'aspectfit' or 'fill'
+            gravity: 'Center', // optional: position crop area when using 'aspectfill'
+            format: type,
+            quality: quality
+          }
 
-            const options = {
-              srcData: src_data,
-              blur: 1,
-              // resizeStyle: resize_style, // aspectfill is the default, or 'aspectfit' or 'fill'
-              gravity: 'Center', // optional: position crop area when using 'aspectfill'
-              format: type,
-              quality: quality
-            }
+          if (width) options.width = width
+          if (height) options.height = height
+          if (resize_style) options.resizeStyle = resize_style
 
-            if (width) options.width = width
-            if (height) options.height = height
-            if (resize_style) options.resizeStyle = resize_style
-
-            fs.writeFileSync(filepath, imagemagick.convert(options))
-            return this.download(filepath, undefined, id)
-          })
+          await fs_writeFile(filepath, imagemagick.convert(options))
+          return this.download(filepath, undefined, id)
         }
-      } else { // 原图不存在
-        const filepath = generator(width, height)
+      } else {
+        const filepath = await generator(width, height)
         return this.download(filepath, undefined, id)
       }
-    } catch (e) { // 读取异常，可能是id不对、原图不存在
-      const filepath = generator(width, height)
+    }
+    else { // 原图不存在
+      const filepath = await generator(width, height)
       return this.download(filepath, undefined, id)
     }
   }
