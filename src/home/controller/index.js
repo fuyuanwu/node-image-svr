@@ -15,6 +15,8 @@ let generator = function (width, height) {
     width: width,
     height: height
   }))
+
+  return  filepath
 }
 
 export default class extends Base {
@@ -84,11 +86,11 @@ export default class extends Base {
           })
         }
       } else { // 原图不存在
-        generator(width, height)
+        const filepath = generator(width, height)
         return this.download(filepath, undefined, id)
       }
     } catch (e) { // 读取异常，可能是id不对、原图不存在
-      generator(width, height)
+      const filepath = generator(width, height)
       return this.download(filepath, undefined, id)
     }
   }
