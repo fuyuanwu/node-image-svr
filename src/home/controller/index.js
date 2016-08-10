@@ -12,9 +12,8 @@ let fs_writeFile = think.promisify(fs.writeFile, fs)
 async function get_filepath_on_not_find (width, height) {
   // 根据参数生成文件名
   const filepath = util.decode_sys_filepath('not_find', width, height)
-
   const exists = fs.existsSync(filepath)
-  console.log('exists', exists)
+
   if (exists) {
     return filepath
   } else {
@@ -99,7 +98,7 @@ export default class extends Base {
     }
   }
 
-  uploadAction () {
+  async uploadAction () {
     // 处理跨域问题
     let method = this.http.method.toLowerCase()
     if (method === "options") {
@@ -117,7 +116,7 @@ export default class extends Base {
       return this.json({ errcode: 400, errmsg: 'no file upload' })
     }
 
-    let srcData = fs.readFileSync(filepath)
+    let srcData = await fs_readFile(filepath)
     let md5Hex = util.md5Hex(srcData)
     const filename = util.encode_filename_v1('v1', md5Hex)
     const upload_filedir = util.get_filedir('appid', filename)
@@ -125,7 +124,6 @@ export default class extends Base {
     const upload_filepath = `${upload_filedir}${path.sep}${filename}`
 
     // 文件上传后，需要将文件移动到项目其他地方，否则会在请求结束时删除掉该文件
-
     think.mkdir(upload_filedir)
 
     // 这里需要注意，只有同一个挂载点才能调用 rename，要移动到不同挂载点上面去的时候，需要用其他方法。
