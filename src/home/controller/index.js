@@ -73,9 +73,18 @@ export default class extends Base {
           })
         }
       } else { // 原图不存在
-        return this.json({ errcode: 408, errmsg: 'id invalid.' })
+        const filepath = util.get_sys_filepath('not_find', width, height)
+        const src_filepath = './img/not_find/not_find.png'
+        let data = fs.readFileSync(src_filepath)
+        fs.writeFileSync(filepath, imagemagick.convert({
+          srcData: data,
+          width: width,
+          height: height
+        }))
+
+        return this.download(filepath, undefined, id)
       }
-    } catch (e) { // 原图不存在
+    } catch (e) { // 读取异常，可能是id不对、原图不存在
       return this.json({ errcode: 408, errmsg: 'id invalid.' })
     }
   }
@@ -103,7 +112,6 @@ export default class extends Base {
     const filename = util.encode_filename_v1('v1', md5Hex)
     const upload_filedir = util.get_filedir('appid', filename)
 
-    console.log(upload_filedir)
     const upload_filepath = `${upload_filedir}${path.sep}${filename}`
 
     // 文件上传后，需要将文件移动到项目其他地方，否则会在请求结束时删除掉该文件

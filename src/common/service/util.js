@@ -37,6 +37,10 @@ export default class {
     return [ 'v1', md5Hex, type, width, height, resize_style ].join('&')
   }
 
+  static get_sys_filepath (type = 'not_find', width = '', height = '') {
+    return [ 'v1', type, width, height ].join('&')
+  }
+
   static deode_filename_v1 (encode_filename_v1) {
     return [ _v1_, _md5Hex_, _type_, _width_, _height_, _resize_style_ ] = encode_filename_v1.split('&')
   }
