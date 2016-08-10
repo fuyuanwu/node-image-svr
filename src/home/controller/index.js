@@ -6,8 +6,6 @@ import path from 'path'
 import imagemagick from 'imagemagick-native'
 import util from '../../common/service/util'
 
-let fs_exists = think.promisify(fs.exists, fs)
-let fs_stat = think.promisify(fs.stat, fs)
 let fs_readFile = think.promisify(fs.readFile, fs)
 let fs_writeFile = think.promisify(fs.writeFile, fs)
 
@@ -16,7 +14,7 @@ async function generator (width, height) {
   const src_filepath = './img/not_find/not_find.png'
   let data = await fs_readFile(src_filepath)
 
-  const exists = await fs_exists(filepath)
+  const exists = fs.existsSync(filepath)
   if (exists) {
     return filepath
   } else {
@@ -48,16 +46,16 @@ export default class extends Base {
     const src_filedir = util.get_filedir('appid', src_filename)
     const src_filepath = `${src_filedir}${path.sep}${src_filename}`
 
-    const src_exists = await fs_exists(src_filepath)
+    const src_exists = fs.existsSync(src_filepath)
 
     if (src_exists) { // 存在
-      const src_stat = await fs_stat(src_filepath)
+      const src_stat = fs.statSync(src_filepath)
       if (src_stat.isFile()) {
         const filename = util.encode_filename_v1('v1', id, type, width, height, resize_style)
         const filedir = util.get_filedir('appid', filename)
         const filepath = `${filedir}${path.sep}${filename}`
 
-        const exists = await fs_exists(filepath)
+        const exists = fs.existsSync(filepath)
         if (exists) {
           return this.download(filepath, undefined, id)
         } else { // 目标图不存在
