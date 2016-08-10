@@ -6,6 +6,17 @@ import path from 'path'
 import imagemagick from 'imagemagick-native'
 import util from '../../common/service/util'
 
+let generator = function () {
+  const filepath = util.get_sys_filepath('not_find', width, height)
+  const src_filepath = './img/not_find/not_find.png'
+  let data = fs.readFileSync(src_filepath)
+  fs.writeFileSync(filepath, imagemagick.convert({
+    srcData: data,
+    width: width,
+    height: height
+  }))
+}
+
 export default class extends Base {
   // 上传文件的实例代码
   // indexAction () {
@@ -73,19 +84,12 @@ export default class extends Base {
           })
         }
       } else { // 原图不存在
-        const filepath = util.get_sys_filepath('not_find', width, height)
-        const src_filepath = './img/not_find/not_find.png'
-        let data = fs.readFileSync(src_filepath)
-        fs.writeFileSync(filepath, imagemagick.convert({
-          srcData: data,
-          width: width,
-          height: height
-        }))
-
+        generator()
         return this.download(filepath, undefined, id)
       }
     } catch (e) { // 读取异常，可能是id不对、原图不存在
-      return this.json({ errcode: 408, errmsg: 'id invalid.' })
+      generator()
+      return this.download(filepath, undefined, id)
     }
   }
 
