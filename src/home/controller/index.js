@@ -6,7 +6,7 @@ import path from 'path'
 import imagemagick from 'imagemagick-native'
 import util from '../../common/service/util'
 
-let generator = function () {
+let generator = function (width, height) {
   const filepath = util.get_sys_filepath('not_find', width, height)
   const src_filepath = './img/not_find/not_find.png'
   let data = fs.readFileSync(src_filepath)
@@ -84,11 +84,11 @@ export default class extends Base {
           })
         }
       } else { // 原图不存在
-        generator()
+        generator(width, height)
         return this.download(filepath, undefined, id)
       }
     } catch (e) { // 读取异常，可能是id不对、原图不存在
-      generator()
+      generator(width, height)
       return this.download(filepath, undefined, id)
     }
   }
