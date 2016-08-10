@@ -9,15 +9,17 @@ import util from '../../common/service/util'
 let fs_readFile = think.promisify(fs.readFile, fs)
 let fs_writeFile = think.promisify(fs.writeFile, fs)
 
-async function generator (width, height) {
-  const filepath = util.get_sys_filepath('not_find', width, height)
-  const src_filepath = './img/not_find/not_find.png'
-  let data = await fs_readFile(src_filepath)
+async function get_filepath_on_not_find (width, height) {
+  // 根据参数生成文件名
+  const filepath = util.decode_sys_filepath('not_find', width, height)
 
   const exists = fs.existsSync(filepath)
+  console.log('exists', exists)
   if (exists) {
     return filepath
   } else {
+    const src_filepath = './img/not_find/not_find.png'
+    let data = await fs_readFile(src_filepath)
     await fs_writeFile(filepath, imagemagick.convert({
       srcData: data,
       width: width,
@@ -87,12 +89,12 @@ export default class extends Base {
           return this.download(filepath, undefined, id)
         }
       } else {
-        const filepath = await generator(width, height)
+        const filepath = await get_filepath_on_not_find(width, height)
         return this.download(filepath, undefined, id)
       }
     }
     else { // 原图不存在
-      const filepath = await generator(width, height)
+      const filepath = await get_filepath_on_not_find(width, height)
       return this.download(filepath, undefined, id)
     }
   }

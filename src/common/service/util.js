@@ -37,8 +37,11 @@ export default class {
     return [ 'v1', md5Hex, type, width, height, resize_style ].join('&')
   }
 
-  static get_sys_filepath (type = 'not_find', width = '', height = '') {
-    return [ 'v1', type, width, height ].join('&')
+  static decode_sys_filepath (type = 'not_find', width = '', height = '') {
+    const filename = [ 'v1', type, width, height ].join('&')
+    let config = think.config('upload')
+    let root_path = config.path
+    return `${root_path}${path.sep}${type}${path.sep}${filename}`
   }
 
   static deode_filename_v1 (encode_filename_v1) {
