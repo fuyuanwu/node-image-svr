@@ -64,10 +64,10 @@ export default class extends Base {
           let quality = 100
 
           // 根据原图确定压缩比
-          if (size > 1024 * 4) quality = quality * 0.25
-          else if (size > 1024 * 2) quality = quality * 0.4
-          else if (size > 1024) quality = quality * 0.8
-          else if (size > 512) quality = quality * 0.9
+          if (size > 1024 * 1024 * 4) quality = quality * 0.25
+          else if (size > 1024 * 1024 * 2) quality = quality * 0.4
+          else if (size > 1024 * 1024) quality = quality * 0.8
+          else if (size > 1024 * 512) quality = quality * 0.9
 
           let src_data = await fs_readFile(src_filepath)
 
