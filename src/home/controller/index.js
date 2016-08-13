@@ -73,7 +73,7 @@ export default class extends Base {
 
           const options = {
             srcData: src_data,
-            blur: 1,
+            blur: 0,
             // resizeStyle: resize_style, // aspectfill is the default, or 'aspectfit' or 'fill'
             gravity: 'Center', // optional: position crop area when using 'aspectfill'
             format: type,
